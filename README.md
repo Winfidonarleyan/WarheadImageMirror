@@ -11,7 +11,7 @@ sudo apt-get install git clang cmake make gcc g++ libboost-all-dev libjpeg-dev
 2. Manjaro Linux
 
 ```sh
-sudo pacman -S boost-libs git clang cmake make gcc libjpeg-turbo
+sudo pacman -S boost-libs git clang cmake make
 ```
 
 ## Build process

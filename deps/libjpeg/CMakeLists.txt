@@ -9,13 +9,19 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# User has manually chosen to ignore the git-tests, so throw them a warning.
-# This is done EACH compile so they can be alerted about the consequences.
-#
 
-add_subdirectory(boost)
-add_subdirectory(fmt)
-add_subdirectory(httplib)
-add_subdirectory(libjpeg)
-add_subdirectory(threads)
-add_subdirectory(utf8cpp)
+find_package(JPEG REQUIRED)
+
+if (NOT JPEG_FOUND)
+    message(FATAL_ERROR "Libjpeg wasn't found on your system but it's required to build the server!")
+endif()
+
+add_library(libjpeg INTERFACE)
+
+target_link_libraries(libjpeg
+    INTERFACE
+    ${JPEG_LIBRARIES})
+
+target_include_directories(libjpeg
+    INTERFACE
+    ${JPEG_INCLUDE_DIRS})

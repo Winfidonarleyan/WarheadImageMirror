@@ -42,6 +42,7 @@ target_include_directories(server
 target_link_libraries(server
   PRIVATE
     warhead-core-interface
+    libjpeg
   PUBLIC
     common
     httplib)

@@ -25,8 +25,6 @@
 #include "Util.h"
 #include <iostream>
 
-constexpr auto MAX_OPTIONS = 4;
-
 #if WARHEAD_PLATFORM == WARHEAD_PLATFORM_WINDOWS
 Warhead::WindowsConsoleChannel::WindowsConsoleChannel(std::string_view name, LogLevel level, std::string_view pattern, std::vector<std::string_view> const& options) :
     Channel(ThisChannelType, name, level, pattern),

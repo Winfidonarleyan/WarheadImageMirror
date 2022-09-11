@@ -108,7 +108,7 @@ namespace
 
 #undef PARSE_NUMBER_N
 
-        struct tm t{ 0 };
+        struct tm t{};
         t.tm_year = year - 1900;
         t.tm_mon = month - 1;
         t.tm_mday = day;

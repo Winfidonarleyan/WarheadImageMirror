@@ -214,8 +214,6 @@ void Warhead::Log::CreateChannelsFromConfig(std::string_view logChannelName)
         return;
     }
 
-    auto type = static_cast<ChannelType>(*channelType);
-
     auto loggerLevel = Warhead::StringTo<uint8>(tokens[1]);
     if (!loggerLevel || *loggerLevel >= MAX_LOG_LEVEL)
     {

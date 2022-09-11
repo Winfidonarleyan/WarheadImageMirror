@@ -43,7 +43,8 @@ target_link_libraries(server
   PRIVATE
     warhead-core-interface
   PUBLIC
-    common)
+    common
+    httplib)
 
 # Install dynamic lib
 InstallDynamicLibrary(server)

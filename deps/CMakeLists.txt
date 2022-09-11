@@ -15,5 +15,6 @@
 
 add_subdirectory(boost)
 add_subdirectory(fmt)
+add_subdirectory(httplib)
 add_subdirectory(threads)
 add_subdirectory(utf8cpp)

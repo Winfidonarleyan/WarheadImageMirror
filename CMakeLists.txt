@@ -24,7 +24,7 @@ message(STATUS "CMake version: ${CMAKE_VERSION}")
 cmake_policy(SET CMP0005 NEW)
 
 # Set projectname (must be done AFTER setting configurationtypes)
-project(WarheadImageMirror VERSION 3.0.0 LANGUAGES CXX C)
+project(WarheadImageMirror)
 
 # add this options before PROJECT keyword
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)

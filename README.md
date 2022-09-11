@@ -5,7 +5,7 @@
 1. Ubuntu
 
 ```sh
-sudo apt-get install git clang cmake make gcc g++ libboost-all-dev libjpeg-dev
+sudo apt-get install git clang cmake make gcc g++ libboost-all-dev
 ```
 
 2. Manjaro Linux

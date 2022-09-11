@@ -34,7 +34,6 @@ A new folder should appear next to the repository `wim`
 3. Replace file name to `WarheadImageMirror.conf`
 4. Change options if need
 
-
 ### Run server
 1. Move to `../wim/bin`
 2. ./WarheadImageMirror

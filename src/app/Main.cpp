@@ -16,26 +16,31 @@
  */
 
 #include "Config.h"
+#include "Timer.h"
 #include "Errors.h"
 #include "IoContext.h"
+#include "HttpServerMgr.h"
 #include "Log.h"
+#include "ServerMgr.h"
 #include <boost/asio/signal_set.hpp>
-#include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/program_options.hpp>
 #include <boost/version.hpp>
 #include <csignal>
 #include <filesystem>
 #include <iostream>
+#include <thread>
 
 #ifndef _WARHEAD_SERVER_CONFIG
 #define _WARHEAD_SERVER_CONFIG "WarheadImageMirror.conf"
 #endif
 
+#include "ImageMgr.h"
+
 using namespace boost::program_options;
 namespace fs = std::filesystem;
 
-void SignalHandler(std::weak_ptr<Warhead::Asio::IoContext> ioContextRef, boost::system::error_code const& error, int /*signalNumber*/);
 variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile);
+void ServerUpdateLoop();
 
 /// Launch the server
 int main(int argc, char** argv)
@@ -59,52 +64,48 @@ int main(int argc, char** argv)
     // Init logging
     sLog->Initialize();
 
-    LOG_INFO("server.authserver", "> Using configuration file:       {}", sConfigMgr->GetFilename());
-    LOG_INFO("server.authserver", "> Using Boost version:            {}.{}.{}", BOOST_VERSION / 100000, BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
-    LOG_INFO("server.authserver", "> Using logs directory:           {}", sLog->GetLogsDir());
+    LOG_INFO("server", "> Using configuration file:       {}", sConfigMgr->GetFilename());
+    LOG_INFO("server", "> Using Boost version:            {}.{}.{}", BOOST_VERSION / 100000, BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
+    LOG_INFO("server", "> Using logs directory:           {}", sLog->GetLogsDir());
+    LOG_INFO("server", "");
 
     std::shared_ptr<Warhead::Asio::IoContext> ioContext = std::make_shared<Warhead::Asio::IoContext>();
 
-    // Start the listening port (acceptor) for auth connections
-    int32 port = sConfigMgr->GetOption<int32>("RealmServerPort", 3724);
-    if (port < 0 || port > 0xFFFF)
-    {
-        LOG_ERROR("server.authserver", "Specified port out of allowed range (1-65535)");
-        return 1;
-    }
+    // Initialize http server
+    sHttpServerMgr->Initialize();
 
-    std::string bindIp = sConfigMgr->GetOption<std::string>("BindIP", "0.0.0.0");
-
-    /*if (!sAuthSocketMgr.StartNetwork(*ioContext, bindIp, port))
-    {
-        LOG_ERROR("server.authserver", "Failed to initialize network");
-        return 1;
-    }*/
-
-    // std::shared_ptr<void> sAuthSocketMgrHandle(nullptr, [](void*) { sAuthSocketMgr.StopNetwork(); });
+    std::shared_ptr<void> sHttpServerMgrHandle(nullptr, [](void*) { sHttpServerMgr->Stop(); });
 
     // Set signal handlers
     boost::asio::signal_set signals(*ioContext, SIGINT, SIGTERM);
 #if WARHEAD_PLATFORM == WARHEAD_PLATFORM_WINDOWS
     signals.add(SIGBREAK);
 #endif
-    signals.async_wait(std::bind(&SignalHandler, std::weak_ptr<Warhead::Asio::IoContext>(ioContext), std::placeholders::_1, std::placeholders::_2));
+    signals.async_wait([](boost::system::error_code const& error, int signalNumber)
+    {
+        LOG_WARN("server", "> Caught signal {}", signalNumber);
 
-    // Start the io service worker loop
-    ioContext->run();
+        if (!error)
+            ServerMgr::StopNow(SHUTDOWN_EXIT_CODE);
+    });
 
-    LOG_INFO("server.authserver", "Halting process...");
+    // Start the Boost based thread pool
+    std::shared_ptr<std::thread> ioContextThread(new std::thread([ioContext](){ ioContext->run();} ), [ioContext](std::thread* del)
+    {
+        ioContext->stop();
+        del->join();
+        delete del;
+    });
+
+    ServerUpdateLoop();
+
+    LOG_INFO("server", "Halting process...");
 
     signals.cancel();
 
-    return 0;
-}
-
-void SignalHandler(std::weak_ptr<Warhead::Asio::IoContext> ioContextRef, boost::system::error_code const& error, int /*signalNumber*/)
-{
-    if (!error)
-        if (std::shared_ptr<Warhead::Asio::IoContext> ioContext = ioContextRef.lock())
-            ioContext->stop();
+    // 0 - normal shutdown
+    // 1 - shutdown at error
+    return ServerMgr::GetExitCode();
 }
 
 variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile)
@@ -112,7 +113,6 @@ variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile)
     options_description all("Allowed options");
     all.add_options()
         ("help,h", "print usage message")
-        ("version,v", "print version build info")
         ("config,c", value<fs::path>(&configFile)->default_value(fs::path(sConfigMgr->GetConfigPath() + std::string(_WARHEAD_SERVER_CONFIG))), "use <arg> as configuration file");
 
     variables_map variablesMap;
@@ -131,4 +131,27 @@ variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile)
         std::cout << all << "\n";
 
     return variablesMap;
+}
+
+void ServerUpdateLoop()
+{
+    auto realCurrTime = 0ms;
+    auto realPrevTime = GetTimeMS();
+
+    // While we have not ServerMgr::_stopEvent, update the server
+    while (!ServerMgr::IsStopped())
+    {
+        realCurrTime = GetTimeMS();
+
+        auto diff = GetMSTimeDiff(realPrevTime, realCurrTime);
+        if (diff == 0ms)
+        {
+            // sleep until enough time passes that we can update all timers
+            std::this_thread::sleep_for(1ms);
+            continue;
+        }
+
+        sServerMgr->Update(diff);
+        realPrevTime = realCurrTime;
+    }
 }

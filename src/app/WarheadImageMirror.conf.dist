@@ -40,12 +40,12 @@
 LogsDir = ""
 
 #
-#    RealmServerPort
-#        Description: TCP port to reach the server
+#    BindPort
+#        Description: Port to reach the server
 #        Default:     3724
 #
 
-ServerPort = 3724
+BindPort = 8080
 
 #
 #
@@ -54,6 +54,14 @@ ServerPort = 3724
 #        Default:     "0.0.0.0" - (Bind to all IPs on the system)
 
 BindIP = "0.0.0.0"
+
+#
+#    PayloadLengthMax
+#        Description: Maximum payload length for reading a request body in MB
+#        Default:  10
+#
+
+PayloadLengthMax = 10
 ###################################################################################################
 
 ###################################################################################################

@@ -15,8 +15,6 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-
 CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE_SOURCES)

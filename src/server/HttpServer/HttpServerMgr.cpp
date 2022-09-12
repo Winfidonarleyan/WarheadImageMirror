@@ -36,7 +36,7 @@ void HttpServerMgr::Initialize()
         auto binIP = sConfigMgr->GetOption<std::string>("BindIP", "0.0.0.0");
         auto bindPort = sConfigMgr->GetOption<uint16>("BindPort", 8080);
 
-        LOG_INFO("server", "Network thread starting. IP: {}. Port: {}", binIP, bindPort);
+        LOG_INFO("http", "Network thread starting. IP: {}. Port: {}", binIP, bindPort);
 
         // Try bind socket
         if (!_server->listen(binIP, bindPort))
@@ -66,6 +66,8 @@ void HttpServerMgr::AddDefaultPosts()
              return;
         }
 
+        LOG_INFO("http", "> New request from {}:{}", req.remote_addr, req.remote_port);
+
         StopWatch sw;
         std::string binaryData;
 
@@ -75,7 +77,7 @@ void HttpServerMgr::AddDefaultPosts()
             return true;
         });
 
-        LOG_DEBUG("http", "> End data read. Binary data length: {}", binaryData.length());
+        LOG_INFO("http", "> End data read. Binary data length: {}", binaryData.length());
         std::string mirrorImageBinary;
 
         if (!sImageMgr->GetBinaryMirrorImage(binaryData, mirrorImageBinary))

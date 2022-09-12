@@ -75,7 +75,7 @@ void HttpServerMgr::AddDefaultPosts()
             return true;
         });
 
-        LOG_DEBUG("http", "> End data read");
+        LOG_DEBUG("http", "> End data read. Binary data length: {}", binaryData.length());
         std::string mirrorImageBinary;
 
         if (!sImageMgr->GetBinaryMirrorImage(binaryData, mirrorImageBinary))
@@ -85,5 +85,5 @@ void HttpServerMgr::AddDefaultPosts()
         res.set_content(mirrorImageBinary, "application/octet-stream");
 
         LOG_INFO("http", "> End send binary data for client. Elapsed: {}", sw);
-     });
+    });
 }

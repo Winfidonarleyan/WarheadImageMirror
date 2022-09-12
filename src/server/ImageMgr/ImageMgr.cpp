@@ -3,9 +3,16 @@
 //
 
 #include "ImageMgr.h"
-#include "Log.h"
-#include <sstream>
 #include <jpeglib.h>
+
+struct WarheadJpegImage
+{
+    uint8* JpegData{ nullptr };
+    uint32 Width{};
+    uint32 Height{};
+    uint32 Components{};
+    uint32 ColorSpace{};
+};
 
 ImageMgr* ImageMgr::instance()
 {
@@ -38,19 +45,22 @@ bool ImageMgr::GetImageData(std::string_view fromBinaryData, WarheadJpegImage& j
 
     JSAMPARRAY row_data = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, row_size, 1);
 
-    auto* out_buf = (uint8_t*)malloc(row_size * cinfo.output_height);
+    auto* out_buf = (uint8*)malloc(row_size * cinfo.output_height);
+    if (!out_buf)
+        return false;
+
     jpegImage.JpegData = out_buf;
 
     // read row by row
     while (cinfo.output_scanline < cinfo.output_height)
     {
-        //read a single row
+        // Read a single row
         jpeg_read_scanlines(&cinfo, row_data, 1);
 
-        //prepare destination pointer
-        void* dst = out_buf + row_size * (cinfo.output_scanline - 1); // do -1 as it has already bben increased by readind method
+        // Prepare destination pointer
+        void* dst = out_buf + row_size * (cinfo.output_scanline - 1);
 
-        // move the row data into output buffer
+        // Move the row data into output buffer
         memmove(dst, row_data[0], row_size);
     }
 
@@ -61,7 +71,7 @@ bool ImageMgr::GetImageData(std::string_view fromBinaryData, WarheadJpegImage& j
     jpegImage.ColorSpace = static_cast<uint32>(cinfo.out_color_space);
 
     // clean up
-    (*cinfo.mem->free_pool)((j_common_ptr) &cinfo, JPOOL_IMAGE);
+    (*cinfo.mem->free_pool)((j_common_ptr)&cinfo, JPOOL_IMAGE);
 
     jpeg_finish_decompress(&cinfo);
     jpeg_destroy_decompress(&cinfo);
@@ -70,6 +80,7 @@ bool ImageMgr::GetImageData(std::string_view fromBinaryData, WarheadJpegImage& j
 
 bool ImageMgr::MirrorImage(WarheadJpegImage& image)
 {
+    // Check data before mirror
     if (!image.JpegData || image.Components != 3)
         return false;
 
@@ -105,10 +116,12 @@ bool ImageMgr::SaveImageData(WarheadJpegImage const& image, std::string& toBinar
     cinfo.err = jpeg_std_error(&jerr);
     jpeg_create_compress(&cinfo);
 
+    // Init variables for storage
     unsigned char *mem = nullptr;
     unsigned long mem_size = 0;
     jpeg_mem_dest(&cinfo, &mem, &mem_size);
 
+    // Fill cinfo
     cinfo.image_width = image.Width;
     cinfo.image_height = image.Height;
     cinfo.input_components = image.Components;
@@ -134,12 +147,15 @@ bool ImageMgr::SaveImageData(WarheadJpegImage const& image, std::string& toBinar
         jpeg_write_scanlines(&cinfo, row_data, 1);
     }
 
-    // clean up
+    // Save binary data
+    toBinaryData = std::string{ (char const*)mem, mem_size };
+
+    // Clean up
     (*cinfo.mem->free_pool)((j_common_ptr)&cinfo, JPOOL_IMAGE);
+    delete[] mem;
+    delete[] image.JpegData;
 
     jpeg_finish_compress(&cinfo);
     jpeg_destroy_compress(&cinfo);
-
-    toBinaryData = std::string{ (char const*)mem, mem_size };
     return true;
 }

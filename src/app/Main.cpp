@@ -34,8 +34,6 @@
 #define _WARHEAD_SERVER_CONFIG "WarheadImageMirror.conf"
 #endif
 
-#include "ImageMgr.h"
-
 using namespace boost::program_options;
 namespace fs = std::filesystem;
 
@@ -89,7 +87,7 @@ int main(int argc, char** argv)
             ServerMgr::StopNow(SHUTDOWN_EXIT_CODE);
     });
 
-    // Start the Boost based thread pool
+    // Start the Boost based thread
     std::shared_ptr<std::thread> ioContextThread(new std::thread([ioContext](){ ioContext->run();} ), [ioContext](std::thread* del)
     {
         ioContext->stop();

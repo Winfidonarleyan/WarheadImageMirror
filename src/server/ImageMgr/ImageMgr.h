@@ -6,17 +6,9 @@
 #define WARHEADIMAGEMIRROR_IMAGEMGR_H
 
 #include "Define.h"
-#include <vector>
 #include <string_view>
 
-struct WarheadJpegImage
-{
-    uint8* JpegData{ nullptr };
-    uint32 Width{};
-    uint32 Height{};
-    uint32 Components{};
-    uint32 ColorSpace{};
-};
+struct WarheadJpegImage;
 
 class ImageMgr
 {
@@ -25,11 +17,10 @@ public:
 
     bool GetBinaryMirrorImage(std::string_view fromBinaryData, std::string& toBinaryData);
 
-
 private:
-    bool GetImageData(std::string_view fromBinaryData, WarheadJpegImage& image);
-    bool SaveImageData(WarheadJpegImage const& image, std::string& toBinaryData);
-    bool MirrorImage(WarheadJpegImage& image);
+    static bool GetImageData(std::string_view fromBinaryData, WarheadJpegImage& image);
+    static bool SaveImageData(WarheadJpegImage const& image, std::string& toBinaryData);
+    static bool MirrorImage(WarheadJpegImage& image);
 
     ImageMgr() = default;
     ~ImageMgr() = default;

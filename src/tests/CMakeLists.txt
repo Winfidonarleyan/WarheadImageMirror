@@ -15,7 +15,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-option(BUILD_TESTING "Build unit tests" 1)
+
 
 CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -47,4 +47,4 @@ target_compile_definitions(tests
     WARHEAD_TEST_IMG_DIR="${CMAKE_CURRENT_SOURCE_DIR}/img")
 
 enable_testing()
-add_test(tests tests)
+add_test(ImageMirror tests)

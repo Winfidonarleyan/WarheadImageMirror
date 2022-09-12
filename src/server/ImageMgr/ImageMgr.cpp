@@ -3,6 +3,9 @@
 //
 
 #include "ImageMgr.h"
+#include <cstdlib>
+#include <cstring>
+#include <string>
 #include <jpeglib.h>
 
 struct WarheadJpegImage

@@ -15,19 +15,34 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Specified files for Windows
-if (WIN32)
-  # Crash logs
-  set(winDebugging
-    ${CMAKE_SOURCE_DIR}/src/common/Debugging/WheatyExceptionReport.cpp
-    ${CMAKE_SOURCE_DIR}/src/common/Debugging/WheatyExceptionReport.h)
+CollectSourceFiles(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  PRIVATE_SOURCES)
 
-  # Service
-  set(winService
-    ${CMAKE_SOURCE_DIR}/src/common/Platform/ServiceWin32.cpp
-    ${CMAKE_SOURCE_DIR}/src/common/Platform/ServiceWin32.h)
-endif()
+# Group sources
+GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_subdirectory(server)
-add_subdirectory(app)
-add_subdirectory(tests)
+add_executable(tests
+  ${PRIVATE_SOURCES})
+
+CollectIncludeDirectories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  PUBLIC_INCLUDES)
+
+target_include_directories(tests
+  PUBLIC
+    ${PUBLIC_INCLUDES}
+  PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR})
+
+target_link_libraries(tests
+  PRIVATE
+    warhead-core-interface
+    server)
+
+target_compile_definitions(tests
+  PRIVATE
+    WARHEAD_TEST_IMG_DIR="${CMAKE_CURRENT_SOURCE_DIR}/img")
+
+enable_testing()
+add_test(ImageMirror tests)

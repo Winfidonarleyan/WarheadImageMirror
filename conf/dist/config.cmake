@@ -10,8 +10,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
-option(USE_SCRIPTPCH       "Use precompiled headers when compiling scripts"              1)
-option(USE_COREPCH         "Use precompiled headers when compiling servers"              1)
+option(BUILD_TESTING       "Build unit tests"                                            1)
 option(WITH_WARNINGS       "Show all warnings during compile"                            0)
 option(WITH_DYNAMIC_LINKING "Enable dynamic library linking."                            0)
 

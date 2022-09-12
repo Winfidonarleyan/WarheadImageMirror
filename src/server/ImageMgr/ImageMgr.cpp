@@ -160,8 +160,8 @@ bool ImageMgr::SaveImageData(WarheadJpegImage const& image, std::string& toBinar
     toBinaryData = std::string{ (char const*)mem, mem_size };
 
     // Clean up specified variables
-    delete mem;
-    delete image.JpegData;
+    delete[] mem;
+    delete[] image.JpegData;
 
     return true;
 }

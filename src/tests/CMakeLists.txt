@@ -15,6 +15,8 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+option(BUILD_TESTING "Build unit tests" 1)
+
 CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE_SOURCES)

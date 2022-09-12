@@ -94,7 +94,7 @@ namespace Warhead
         std::unordered_map<std::string, std::shared_ptr<Channel>> _channels;
         std::unordered_map<int8, ChannelCreateFn> _channelsCreateFunction;
 
-        LogLevel highestLogLevel;
+        LogLevel highestLogLevel{ LogLevel::Fatal };
         std::string _logsDir;
 
         //

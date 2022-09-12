@@ -9,13 +9,13 @@
 #include "Duration.h"
 #include <atomic>
 
-enum ShutdownExitCode : uint8
+enum WH_SERVER_API ShutdownExitCode : uint8
 {
     SHUTDOWN_EXIT_CODE,
     ERROR_EXIT_CODE
 };
 
-class ServerMgr
+class WH_SERVER_API ServerMgr
 {
 public:
     static ServerMgr* instance();

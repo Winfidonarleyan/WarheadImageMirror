@@ -33,8 +33,6 @@ CollectIncludeDirectories(
 
 target_include_directories(server
   PUBLIC
-    # Provide the binary dir for all child targets
-    ${CMAKE_BINARY_DIR}
     ${PUBLIC_INCLUDES}
   PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR})
@@ -43,9 +41,9 @@ target_link_libraries(server
   PRIVATE
     warhead-core-interface
     libjpeg
+    httplib
   PUBLIC
-    common
-    httplib)
+    common)
 
 # Install dynamic lib
 InstallDynamicLibrary(server)

@@ -98,7 +98,7 @@ void Warhead::Channel::ParsePattern()
 
                     auto lenght = Warhead::StringTo<std::size_t>(number);
                     if (!lenght)
-                        throw Exception("ParsePattern: Error at conver lenght from {}", number);
+                        throw Exception("ParsePattern: Error at convert length from {}", number);
 
                     act.length = *lenght;
                 }

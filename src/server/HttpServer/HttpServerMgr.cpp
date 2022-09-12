@@ -79,7 +79,10 @@ void HttpServerMgr::AddDefaultPosts()
         std::string mirrorImageBinary;
 
         if (!sImageMgr->GetBinaryMirrorImage(binaryData, mirrorImageBinary))
+        {
+            LOG_ERROR("http", "> Can't get binary data for mirror image");
             return; // Stop job if failed get binary data for image
+        }
 
         // Start send data to client
         res.set_content(mirrorImageBinary, "application/octet-stream");

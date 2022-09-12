@@ -27,11 +27,11 @@ namespace Warhead
     {
     public:
         /// Creates an exception with message.
-        Exception(std::string_view msg) : _msg(msg) { }
+        explicit Exception(std::string_view msg) : _msg(msg) { }
 
         /// Creates an exception with fmt message.
         template<typename... Args>
-        Exception(std::string_view fmt, Args&&... args)
+        explicit Exception(std::string_view fmt, Args&&... args)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace Warhead
 
         /// Returns a string consisting of the
         /// message name and the message text.
-        inline std::string_view GetErrorMessage() const { return _msg; }
+        [[nodiscard]] inline std::string_view GetErrorMessage() const { return _msg; }
 
     private:
         std::string _msg;

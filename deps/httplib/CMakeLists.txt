@@ -33,11 +33,7 @@ target_link_libraries(httplib
   PRIVATE
     warhead-dependency-interface)
 
-target_compile_definitions(fmt
-  PUBLIC
-    FMT_CONSTEVAL=)
-
-set_target_properties(fmt
+set_target_properties(httplib
   PROPERTIES
     FOLDER
       "deps")

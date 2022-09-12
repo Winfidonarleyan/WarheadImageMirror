@@ -13,7 +13,7 @@ namespace httplib
     class Server;
 }
 
-class HttpServerMgr
+class WH_SERVER_API HttpServerMgr
 {
 public:
     static HttpServerMgr* instance();

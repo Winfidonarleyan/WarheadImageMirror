@@ -26,26 +26,28 @@
 class WH_COMMON_API ConfigMgr
 {
     ConfigMgr() = default;
-    ConfigMgr(ConfigMgr const&) = delete;
-    ConfigMgr& operator=(ConfigMgr const&) = delete;
     ~ConfigMgr() = default;
+    ConfigMgr(ConfigMgr const&) = delete;
+    ConfigMgr(ConfigMgr&&) = delete;
+    ConfigMgr& operator=(ConfigMgr const&) = delete;
+    ConfigMgr& operator=(ConfigMgr&&) = delete;
 
 public:
-    bool LoadAppConfigs();
-    void Configure(std::string_view initFileName);
+    static bool LoadAppConfigs();
+    static void Configure(std::string_view initFileName);
 
     static ConfigMgr* instance();
 
-    std::string const GetFilename();
-    std::string const GetConfigPath();
-    std::vector<std::string> GetKeysByString(std::string const& name);
+    static std::string const GetFilename();
+    static std::string const GetConfigPath();
+    static std::vector<std::string> GetKeysByString(std::string const& name);
 
     template<class T>
     T GetOption(std::string const& name, T const& def, bool showLogs = true) const;
 
 private:
-    bool LoadInitial(std::string_view file);
-    bool LoadAdditionalFile(std::string_view file);
+    static bool LoadInitial(std::string_view file);
+    static bool LoadAdditionalFile(std::string_view file);
 
     template<class T>
     T GetValueDefault(std::string const& name, T const& def, bool showLogs = true) const;

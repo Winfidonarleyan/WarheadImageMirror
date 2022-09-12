@@ -68,14 +68,11 @@ namespace Warhead
     {
         Console = 1,
         File,
-        DB,
-        Discord,
 
         Max
     };
 
     constexpr std::size_t MAX_LOG_LEVEL = static_cast<std::size_t>(LogLevel::Max);
-    constexpr std::size_t MAX_CHANNEL_TYPE = static_cast<std::size_t>(ChannelType::Max);
     constexpr std::size_t MAX_CHANNEL_OPTIONS = 7;
     constexpr std::size_t LOGGER_OPTIONS = 2;
 

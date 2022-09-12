@@ -33,7 +33,6 @@
 namespace
 {
     std::string _filename;
-    std::vector<std::string> _additonalFiles;
     std::unordered_map<std::string /*name*/, std::string /*value*/> _configOptions;
     std::mutex _configLock;
     bool _usingDistConfig = false;

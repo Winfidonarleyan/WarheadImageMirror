@@ -21,7 +21,7 @@ include (CheckCXXSourceCompiles)
 
 set(BOOST_REQUIRED_VERSION 1.74)
 
-find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED system filesystem program_options iostreams unit_test_framework)
+find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED program_options unit_test_framework)
 
 if(NOT Boost_FOUND)
   if(NOT DEFINED ENV{BOOST_ROOT} AND NOT DEFINED Boost_DIR AND NOT DEFINED BOOST_ROOT AND NOT DEFINED BOOSTROOT)

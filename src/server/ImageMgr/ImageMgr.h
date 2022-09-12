@@ -8,14 +8,14 @@
 #include "Define.h"
 #include <string_view>
 
-struct WarheadJpegImage;
+struct WH_SERVER_API WarheadJpegImage;
 
-class ImageMgr
+class WH_SERVER_API ImageMgr
 {
 public:
     static ImageMgr* instance();
 
-    bool GetBinaryMirrorImage(std::string_view fromBinaryData, std::string& toBinaryData);
+    static bool GetBinaryMirrorImage(std::string_view fromBinaryData, std::string& toBinaryData);
 
 private:
     static bool GetImageData(std::string_view fromBinaryData, WarheadJpegImage& image);

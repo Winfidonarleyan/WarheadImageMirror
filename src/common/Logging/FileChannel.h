@@ -29,7 +29,7 @@ namespace Warhead
         static constexpr auto ThisChannelType{ ChannelType::File };
 
         FileChannel(std::string_view name, LogLevel level, std::string_view pattern, std::vector<std::string_view> const& options);
-        virtual ~FileChannel();
+        ~FileChannel() override;
 
         void Write(LogMessage const& msg) override;
 

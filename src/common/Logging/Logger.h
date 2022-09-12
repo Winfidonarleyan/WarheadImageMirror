@@ -34,12 +34,12 @@ namespace Warhead
 
         ~Logger() = default;
 
-        inline const std::string_view GetName() const { return _name; }
+        [[nodiscard]] inline const std::string_view GetName() const { return _name; }
 
         void AddChannel(std::shared_ptr<Channel> channel);
 
         inline void SetLevel(LogLevel level) { _level = level; }
-        inline LogLevel GetLevel() const { return _level; }
+        [[nodiscard]] inline LogLevel GetLevel() const { return _level; }
 
         void Write(LogMessage const& msg);
 

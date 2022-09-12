@@ -150,15 +150,18 @@ bool ImageMgr::SaveImageData(WarheadJpegImage const& image, std::string& toBinar
         jpeg_write_scanlines(&cinfo, row_data, 1);
     }
 
-    // Save binary data
-    toBinaryData = std::string{ (char const*)mem, mem_size };
-
     // Clean up
     (*cinfo.mem->free_pool)((j_common_ptr)&cinfo, JPOOL_IMAGE);
-    delete[] mem;
-    delete[] image.JpegData;
 
     jpeg_finish_compress(&cinfo);
     jpeg_destroy_compress(&cinfo);
+
+    // Save binary data
+    toBinaryData = std::string{ (char const*)mem, mem_size };
+
+    // Clean up specified variables
+    delete mem;
+    delete image.JpegData;
+
     return true;
 }

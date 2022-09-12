@@ -45,4 +45,4 @@ target_compile_definitions(tests
     WARHEAD_TEST_IMG_DIR="${CMAKE_CURRENT_SOURCE_DIR}/img")
 
 enable_testing()
-add_test(MirrorTest tests)
+add_test(tests tests)

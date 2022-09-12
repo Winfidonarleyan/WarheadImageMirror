@@ -27,3 +27,7 @@ jobs:
         run: |
           cd build
           make -j 4 && make install
+      - name: Run unit tests
+        run: |
+          ctest --test-dir ./src/tests/
+
